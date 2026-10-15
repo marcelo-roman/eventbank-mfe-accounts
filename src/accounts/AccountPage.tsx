@@ -1,4 +1,5 @@
 import { Link, useParams } from 'react-router';
+import { useUser } from '../shared/auth';
 import { ErrorMessage } from '../shared/ErrorMessage';
 import { formatMoney } from '../shared/format';
 import { useAccount } from './api';
@@ -8,6 +9,7 @@ import { Statement } from './Statement';
 
 export function AccountPage() {
   const { accountId = '' } = useParams();
+  const user = useUser();
   const account = useAccount(accountId);
 
   if (account.isPending) {
@@ -22,7 +24,8 @@ export function AccountPage() {
     );
   }
 
-  const { holder, balance, currency, status, version } = account.data;
+  const { holder, balance, currency, status, version, branch, number, ownerId } = account.data;
+  const isOwner = ownerId === user.id;
   return (
     <div className="page">
       <Link to="/accounts" className="back">
@@ -32,15 +35,21 @@ export function AccountPage() {
         <div>
           <h1>{holder}</h1>
           <p className="muted">
-            <span className={`status status-${status.toLowerCase()}`}>{status}</span> {currency} account, version{' '}
-            {version}
+            <span className={`status status-${status.toLowerCase()}`}>{status}</span> {currency} account {branch}/
+            {number}, version {version}
           </p>
         </div>
         <p className="balance" aria-label="Balance">
           {formatMoney(balance, currency)}
         </p>
       </header>
-      <MoneyActions account={account.data} />
+      {isOwner ? (
+        <MoneyActions account={account.data} />
+      ) : (
+        <p className="muted actions-closed">
+          You are viewing this account as an operator. Only its owner can move money.
+        </p>
+      )}
       <div className="sides">
         <Statement accountId={accountId} currency={currency} />
         <EventStream accountId={accountId} currency={currency} />

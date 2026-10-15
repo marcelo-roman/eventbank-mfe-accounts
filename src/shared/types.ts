@@ -7,7 +7,10 @@ export type AccountStatus = 'Open' | 'Closed';
 
 export interface AccountSummary {
   id: string;
+  ownerId: string;
   holder: string;
+  branch: string;
+  number: string;
   currency: string;
   balance: number;
   status: AccountStatus;
@@ -23,6 +26,7 @@ export interface AccountTransaction {
   amount: number;
   balanceAfter: number;
   transferId: string | null;
+  description: string | null;
   detail: string | null;
   occurredAt: string;
 }

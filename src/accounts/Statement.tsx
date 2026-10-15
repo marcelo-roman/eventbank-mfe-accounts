@@ -11,11 +11,14 @@ const descriptions: Record<string, string> = {
   TransferRefund: 'Transfer refunded',
   TransferOutDeclined: 'Transfer declined',
   TransferInDeclined: 'Incoming transfer declined',
+  CardPurchase: 'Card purchase',
+  CardPurchaseDeclined: 'Card purchase declined',
 };
 
 function describe(transaction: AccountTransaction): string {
-  const description = descriptions[transaction.kind] ?? transaction.kind;
-  return transaction.detail ? `${description}: ${describeReason(transaction.detail)}` : description;
+  const label = descriptions[transaction.kind] ?? transaction.kind;
+  const withDescription = transaction.description ? `${label}, ${transaction.description}` : label;
+  return transaction.detail ? `${withDescription}: ${describeReason(transaction.detail)}` : withDescription;
 }
 
 export function Statement({ accountId, currency }: { accountId: string; currency: string }) {

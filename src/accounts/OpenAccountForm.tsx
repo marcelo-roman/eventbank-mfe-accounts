@@ -7,36 +7,18 @@ import { useOpenAccount } from './api';
 const currencies = ['BRL', 'USD', 'EUR'];
 
 export function OpenAccountForm() {
-  const [holder, setHolder] = useState('');
-  const [currency, setCurrency] = useState('BRL');
+  const [currency, setCurrency] = useState('USD');
   const openAccount = useOpenAccount();
 
   const submit = (event: SyntheticEvent) => {
     event.preventDefault();
-    openAccount.mutate(
-      { holder, currency },
-      {
-        onSuccess: () => {
-          setHolder('');
-        },
-      },
-    );
+    openAccount.mutate({ currency });
   };
 
   return (
     <form className="form" onSubmit={submit}>
-      <h2>Open an account</h2>
-      <label className="field">
-        <span>Holder name</span>
-        <input
-          value={holder}
-          onChange={(event) => {
-            setHolder(event.target.value);
-          }}
-          placeholder="Ana Ribeiro"
-          required
-        />
-      </label>
+      <h2>Open another account</h2>
+      <p className="muted">Accounts are opened in the name on your approved application.</p>
       <label className="field">
         <span>Currency</span>
         <select

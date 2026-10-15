@@ -53,7 +53,7 @@ function readSummary(id: string) {
 export function useOpenAccount() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (input: { holder: string; currency: string }) => {
+    mutationFn: async (input: { currency: string }) => {
       const result = await post<CommandResult>('/accounts', input);
       const catchUp = await waitForReadModel(readSummary(result.id), result.version);
       return { result, catchUp };
