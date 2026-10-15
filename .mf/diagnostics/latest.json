@@ -1,0 +1,10 @@
+{
+  "latestErrorEvent": {
+    "code": "TYPE-001",
+    "message": "Failed to generate type declaration. Execute the below cmd to reproduce and fix the error. #TYPE-001\nargs: {\"cmd\":\"/home/roman/.nvm/versions/node/v22.14.0/bin/node /mnt/projects/marceloroman/eventbanking/eventbank-mfe-accounts/node_modules/.pnpm/typescript@6.0.3/node_modules/typescript/bin/tsc --project /mnt/projects/marceloroman/eventbanking/eventbank-mfe-accounts/node_modules/.federation/tsconfig.fe3edf2d8872c9905f2ecd84fc541926.json\"}\nView the docs to see how to solve: https://module-federation.io/guide/troubleshooting/type#type-001",
+    "args": {
+      "cmd": "/home/roman/.nvm/versions/node/v22.14.0/bin/node /mnt/projects/marceloroman/eventbanking/eventbank-mfe-accounts/node_modules/.pnpm/typescript@6.0.3/node_modules/typescript/bin/tsc --project /mnt/projects/marceloroman/eventbanking/eventbank-mfe-accounts/node_modules/.federation/tsconfig.fe3edf2d8872c9905f2ecd84fc541926.json"
+    },
+    "timestamp": 1792075852169
+  }
+}
