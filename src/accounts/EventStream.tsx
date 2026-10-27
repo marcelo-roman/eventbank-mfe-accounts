@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { ErrorMessage } from '../shared/ErrorMessage';
 import { formatMoney, formatTime } from '../shared/format';
+import { useLocale } from '../shared/i18n/LocaleContext';
 import { type StoredEvent } from '../shared/types';
 import { useAccountEvents, useAccountState } from './api';
 
 export function EventStream({ accountId, currency }: { accountId: string; currency: string }) {
+  const { locale, t } = useLocale();
   const events = useAccountEvents(accountId);
   const [pinned, setPinned] = useState<number | null>(null);
   const latest = events.data?.at(-1)?.version ?? 0;
@@ -14,16 +16,16 @@ export function EventStream({ accountId, currency }: { accountId: string; curren
   return (
     <section className="panel side side-write" aria-labelledby="stream-title">
       <header className="side-header">
-        <h2 id="stream-title">Event stream</h2>
-        <span className="side-tag">Write model</span>
+        <h2 id="stream-title">{t.stream.title}</h2>
+        <span className="side-tag">{t.stream.tag}</span>
       </header>
-      <p className="side-note">The source of truth: append-only facts. Drag to replay the account to any version.</p>
+      <p className="side-note">{t.stream.note}</p>
       <ErrorMessage error={events.error} />
       {latest > 0 && (
         <div className="replay">
           <label className="replay-control">
             <span>
-              Replay to version <strong>{version}</strong> of {latest}
+              {t.stream.replayTo} <strong>{version}</strong> {t.stream.ofLatest(latest)}
             </span>
             <input
               type="range"
@@ -37,8 +39,8 @@ export function EventStream({ accountId, currency }: { accountId: string; curren
           </label>
           {state.data && (
             <p className="replay-result" aria-live="polite">
-              Balance then <strong>{formatMoney(state.data.balance, currency)}</strong>,{' '}
-              {state.data.status.toLowerCase()}
+              {t.stream.balanceThen} <strong>{formatMoney(state.data.balance, currency, locale)}</strong>,{' '}
+              {(t.statuses[state.data.status] ?? state.data.status).toLowerCase()}
             </p>
           )}
           {pinned !== null && pinned !== latest && (
@@ -49,7 +51,7 @@ export function EventStream({ accountId, currency }: { accountId: string; curren
                 setPinned(null);
               }}
             >
-              Back to now
+              {t.stream.backToNow}
             </button>
           )}
         </div>
@@ -64,13 +66,14 @@ export function EventStream({ accountId, currency }: { accountId: string; curren
 }
 
 function EventItem({ event, replayed }: { event: StoredEvent; replayed: boolean }) {
+  const { locale } = useLocale();
   const payload = Object.fromEntries(Object.entries(event.data).filter(([key]) => key !== 'accountId'));
   return (
     <li className={replayed ? 'stream-event' : 'stream-event future'}>
       <div className="stream-event-head">
         <span className="stream-version">v{event.version}</span>
         <span className="stream-type">{event.type}</span>
-        <time dateTime={event.recordedAt}>{formatTime(event.recordedAt)}</time>
+        <time dateTime={event.recordedAt}>{formatTime(event.recordedAt, locale)}</time>
       </div>
       {Object.keys(payload).length > 0 && <pre className="payload">{JSON.stringify(payload, null, 2)}</pre>}
     </li>

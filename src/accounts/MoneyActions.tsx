@@ -1,10 +1,12 @@
 import { type SyntheticEvent, useState } from 'react';
 import { CatchUpNote } from '../shared/CatchUpNote';
 import { ErrorMessage } from '../shared/ErrorMessage';
+import { useLocale } from '../shared/i18n/LocaleContext';
 import { type AccountSummary } from '../shared/types';
 import { type AccountAction, useAccountCommand } from './api';
 
 export function MoneyActions({ account }: { account: AccountSummary }) {
+  const { t } = useLocale();
   const [amount, setAmount] = useState('');
   const command = useAccountCommand(account.id);
   const closed = account.status === 'Closed';
@@ -19,13 +21,13 @@ export function MoneyActions({ account }: { account: AccountSummary }) {
   };
 
   if (closed) {
-    return <p className="muted actions-closed">This account is closed. Its history stays in the stream for good.</p>;
+    return <p className="muted actions-closed">{t.actions.closed}</p>;
   }
 
   return (
     <form className="actions" onSubmit={run('deposits')}>
       <label className="field field-inline">
-        <span>Amount in {account.currency}</span>
+        <span>{t.actions.amountIn(account.currency)}</span>
         <input
           type="number"
           inputMode="decimal"
@@ -39,19 +41,19 @@ export function MoneyActions({ account }: { account: AccountSummary }) {
         />
       </label>
       <button type="submit" className="button primary" disabled={command.isPending}>
-        Deposit
+        {t.actions.deposit}
       </button>
       <button type="button" className="button" disabled={command.isPending || !amount} onClick={run('withdrawals')}>
-        Withdraw
+        {t.actions.withdraw}
       </button>
       <button
         type="button"
         className="button quiet"
         disabled={command.isPending || account.balance !== 0}
-        title={account.balance === 0 ? undefined : 'Only accounts with a zero balance can be closed'}
+        title={account.balance === 0 ? undefined : t.actions.closeNeedsZero}
         onClick={run('close')}
       >
-        Close account
+        {t.actions.close}
       </button>
       <div className="actions-feedback">
         <ErrorMessage error={command.error} />
