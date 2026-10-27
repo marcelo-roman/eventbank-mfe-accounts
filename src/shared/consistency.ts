@@ -20,5 +20,5 @@ export async function waitForReadModel(
     }
     await new Promise((resolve) => setTimeout(resolve, pollInterval));
   }
-  throw new ApiError('The change was saved, but the read model has not caught up yet. Refresh in a moment.', 504);
+  throw new ApiError(504, undefined, 'read_model_lagging');
 }
